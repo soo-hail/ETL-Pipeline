@@ -34,9 +34,21 @@ with DAG(
         
         hook.run(q1)
         
-    # Extract NASA API Data (APOD).
+    # Extract NASA API Data (APOD) - Call API
+    extract_apod = SimpleHttpOperator(
+        task_id='extract_apod',
+        http_conn_id='nasa_api',  # Defined in Airflow Connections
+        endpoint='planetary/apod',  # NASA API Endpoint for APOD
+        method='GET',
+        params={
+            'api_key': '{{ conn.nasa_api.extra_dejson.api_key }}'
+        },
+        response_filter=lambda response: response.json(),
+        log_response=True
+    )
     
     # Transform Data.
+    
     
     # Load Data into PostgreSQL.
     
